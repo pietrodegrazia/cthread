@@ -1,25 +1,42 @@
-/*
- * cdata.h: arquivo de inclus„o de uso apenas na geraÁ„o da libpithread
- *
- * Esse arquivo pode ser modificado. ENTRETANTO, deve ser utilizada a TCB fornecida.
- *
+//
+//  cdata.h
+//  cthread
+//
+//  Created by Henrique Valcanaia on 15/09/16.
+//  Copyright ¬© 2016 Henrique Valcanaia. All rights reserved.
+//
+
+#ifndef cdata_h
+#define cdata_h
+#include "support.h"
+
+enum THREAD_STATE {
+    CREATION = 0,
+    READY = 1,
+    EXEC = 2,
+    BLOCKED = 3,
+    FINISH = 4
+};
+
+/*!
+ @struct s_TCB
+ @abstract Struct que representa um TCB(Thread Control Block)
+ @field tid Thread id
+ @field state Estado atual da thread (THREAD_STATE)
+ @field ticket Ticket sorteado pelo escalonador
+ @field context ucontext_t
+ @discussion Struct utilizada para definicao do TCB. √â importante ressaltar que o tipo ucontex_t N√ÉO √© mais utilizado em vers√µes recentes de UNIX/POSIX.
  */
-#ifndef __cdata__
-#define __cdata__
+typedef struct s_TCB {
+    int tid;
+    int state;
+    int ticket;
+    ucontext_t context;
+} TCB_t;
 
-#define	PROCST_CRIACAO	0
-#define	PROCST_APTO	1
-#define	PROCST_EXEC	2
-#define	PROCST_BLOQ	3
-#define	PROCST_TERMINO	4
+typedef struct s_sem {
+    int count; // indica se recurso estaÃÅ ocupado ou naÃÉo (livre > 0, ocupado ‚â§ 0)
+    PFILA2 fila; // ponteiro para uma fila de threads bloqueadas no semaÃÅforo
+} csem_t;
 
-/* N√O ALTERAR ESSA struct */
-typedef struct s_TCB { 
-	int		tid; 		// identificador da thread
-	int		state;		// estado em que a thread se encontra
-					// 0: CriaÁ„o; 1: Apto; 2: ExecuÁ„o; 3: Bloqueado e 4: TÈrmino
-        int		ticket;		// 0-255: bilhete de loteria da thread
-	ucontext_t 	context;	// contexto de execuÁ„o da thread (SP, PC, GPRs e recursos) 
-} TCB_t; 
-
-#endif
+#endif /* cdata_h */
